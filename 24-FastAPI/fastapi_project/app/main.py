@@ -1,44 +1,35 @@
+# app/main_basics.py
 from fastapi import FastAPI, HTTPException
-from starlette.responses import Response
 
-from app.db.models import UserAnswer
-from app.api import api
-
-app = FastAPI()
-
+app = FastAPI(title="FastAPI Basics – Learning Mode")
 
 @app.get("/")
 def root():
-    return {"message": "Fast API in Python"}
+    return {"message": "Welcome to FastAPI basics"}
 
+@app.get("/items/{item_id}")
+def get_item(item_id: int):
+    return {
+        "item_id": item_id,
+        "description": "This endpoint demonstrates path parameters"
+    }
 
-@app.get("/user")
-def read_user():
-    return api.read_user()
+@app.get("/search")
+def search_items(q: str | None = None, limit: int = 10):
+    return {
+        "query": q,
+        "limit": limit
+    }
 
+@app.post("/items", status_code=201)
+def create_item(payload: dict):
+    if "name" not in payload:
+        raise HTTPException(status_code=400, detail="name is required")
+    return {
+        "message": "Item created",
+        "item": payload
+    }
 
-@app.get("/question/{position}", status_code=200)
-def read_questions(position: int, response: Response):
-    question = api.read_questions(position)
-
-    if not question:
-        raise HTTPException(status_code=400, detail="Error")
-
-    return question
-
-
-@app.get("/alternatives/{question_id}")
-def read_alternatives(question_id: int):
-    return api.read_alternatives(question_id)
-
-
-@app.post("/answer", status_code=201)
-def create_answer(payload: UserAnswer):
-    payload = payload.dict()
-
-    return api.create_answer(payload)
-
-
-@app.get("/result/{user_id}")
-def read_result(user_id: int):
-    return api.read_result(user_id)
+@app.delete("/items/{item_id}", status_code=204)
+def delete_item(item_id: int):
+    return None
