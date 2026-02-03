@@ -1,5 +1,5 @@
 """
-Complete FastAPI CRUD Demo - Full HTTP Methods
+Complete FastAPI CRUD Demo with Pydantic Validation
 ===============================================
 
 ✅ POST - Create data
@@ -9,7 +9,7 @@ Complete FastAPI CRUD Demo - Full HTTP Methods
 ✅ In-memory data storage (dict)
 ✅ Full CRUD workflow with Pydantic validation
 
-Run: uvicorn app.main:app --reload
+Run: uvicorn app.main_pydantic:app --reload
 Swagger: http://127.0.0.1:8000/docs
 """
 
@@ -33,8 +33,11 @@ def create_item(item: ItemCreate):
     """Create new item - validates ItemCreate automatically."""
     global NEXT_ID
     record = item.model_dump()
+    # print("record: " , record)
     record["id"] = NEXT_ID
     DB[NEXT_ID] = record
+    # print("Next id: " , NEXT_ID)
+    # print("DB: " , DB)
     NEXT_ID += 1
     return record
 
@@ -82,7 +85,8 @@ def head_item(item_id: int = Path(..., ge=1)):
 # ✅ PUT - UPDATE DATA (Full Replace)
 # =============================================================================
 @app.put("/items/{item_id}", response_model=ItemRead)
-def update_item(item_id: int = Path(..., ge=1), item: ItemCreate = None):
+def update_item(item_id: int = Path(..., ge=1),
+                item: ItemCreate = None):
     """
     Update existing item (full replace).
 
@@ -117,7 +121,7 @@ async def validation_exception_handler(request, exc):
     """Custom 422: 'Validation failed' + details."""
     return JSONResponse(
         status_code=422,
-        content={"error": "Validation failed", "details": exc.errors()}
+        content={"error": "Sippai shimashitha", "details": exc.errors()}
     )
 
 @app.get("/health")

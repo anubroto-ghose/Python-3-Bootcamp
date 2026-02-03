@@ -46,8 +46,7 @@ class ItemCreate(ItemBase):
 
     FastAPI will validate incoming JSON against this shape automatically.
     """
-    model_config = ItemBase.model_config | ConfigDict(gt=0)  # Inherit + price > 0
-    price: float = Field(..., example=199.99)
+    price: float = Field(..., gt=0, example=199.99)
 
 
 class ItemRead(ItemBase):
