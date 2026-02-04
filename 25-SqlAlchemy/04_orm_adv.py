@@ -31,6 +31,7 @@ from sqlalchemy.orm import (
 
 # ---------------------------------------------------------
 # Base
+# DeclarativeBase = the base class for all ORM models in SQLAlchemy 2.x.
 # ---------------------------------------------------------
 class Base(DeclarativeBase):
     pass
@@ -48,10 +49,14 @@ class User(Base):
 
     # One-to-many relationship
     addresses: Mapped[list["Address"]] = relationship(
+        # Creates a two-way relationship
+        # User.addresses ↔ Address.user
+        # Keeps both sides in sync
         back_populates="user",
         cascade="all, delete-orphan",
     )
 
+    # Controls how the object prints
     def __repr__(self):
         return f"User(name={self.name})"
 
