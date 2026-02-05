@@ -23,7 +23,7 @@ user_table = Table(
 )
 
 # Create an in-memory SQLite database and create tables
-engine = create_engine("sqlite://")
+engine = create_engine("sqlite:///some.db")
 metadata.create_all(engine)
 
 # --- SQL Expression Examples ---
